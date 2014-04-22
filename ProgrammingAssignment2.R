@@ -51,7 +51,7 @@ cachemean <- function(x, ...) {
 
 # use professor's functions to calculate mean of a vector
 
-size <- 5000                           # create data (square matrix)
+size <- 500                           # create data (square matrix)
 mydata <- matrix(rnorm(size*size), size, size)
 
 m1 <- makeVector()                      # create caching data structure 

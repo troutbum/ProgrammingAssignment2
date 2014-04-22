@@ -10,7 +10,6 @@ s <- matrix(1:25,5,5)
 
 
 s <-matrix(rnorm(25),5,5)
-View(s)
 solve(s)
 s
 t <- s
