@@ -1,61 +1,62 @@
 # R Programming - April 2014
 # Programming Assignment 2 - Caching the Inverse of a Matrix
 
-makeVector <- function(x = numeric()) {
-        m <- NULL
-        set <- function(y) {
+# Example: Caching the Mean of a Vector
+# 
+# In this example we introduce the <<- operator which can be used to assign a
+# value to an object in an environment that is different from the current
+# environment. Below are two functions that are used to create a special object
+# that stores a numeric vector and cache's its mean.
+# 
+# The first function, makeVector creates a special "vector", which is really a
+# list containing a function to:
+# - set the value of the vector
+# - get the value of the vector
+# - set the value of the mean
+# - get the value of the mean
+
+
+makeVector <- function(x = numeric()) {         # cached data structure
+        m <- NULL                               # set mean to NULL
+        set <- function(y) {                    # method to store data
                 x <<- y
                 m <<- NULL
         }
-        get <- function() x
-        setmean <- function(mean) m <<- mean
-        getmean <- function() m
-        list(set = set, get = get,
-             setmean = setmean,
-             getmean = getmean)
+        get <- function() x                     # method to retrieve data
+        setmean <- function(mean) m <<- mean    # method to store mean
+        getmean <- function() m                 # method to retrieve mean
+        
+        list(set = set, get = get, setmean = setmean, getmean = getmean)
 }
 
+# The following function calculates the mean of the special "vector" created
+# with the above function. However, it first checks to see if the mean has
+# already been calculated. If so, it gets the mean from the cache and skips the
+# computation. Otherwise, it calculates the mean of the data and sets the value
+# of the mean in the cache via the setmean function.
+
+
 cachemean <- function(x, ...) {
-        m <- x$getmean()
-        if(!is.null(m)) {
+        m <- x$getmean()                        # retrieve cached mean
+        if(!is.null(m)) {                       # if it exists
                 message("getting cached data")
                 return(m)
         }
-        data <- x$get()
-        m <- mean(data, ...)
-        x$setmean(m)
+        data <- x$get()                         # otherwise get cached data
+        m <- mean(data, ...)                    # calculate the mean
+        x$setmean(m)                            # save the mean into cache
         m
 }
 
 
-x <- matrix(1:100, 20, 5)
-m1 <- makeVector(x)
-m1$get()
-m1$getmean()
-m1$set()
-m1$set(x)
-m1$get
-m1$get()
-m1$getmean()
-m1$getmean
-m2 <- makeVector()
-m2$getmean
-m2$getmean()
-s <- matrix(1:25,5,5)
-s
-solve(s)
-s <- matrix(rep(25),5,5)
-solve(s)
-s <- matrix(rep(rand()),5,5)
-s <-matrix(rep(rnorm()),5,5)
-s <-matrix(rnorm(),5,5)
-s <-matrix(rnorm(25),5,5)
-View(s)
-solve(s)
-s
-t <- s
-identical(s,t)
-identical(s,t)
-v <- solve(s)
-identical(s,v)
+# use professor's functions to calculate mean of a vector
 
+size <- 5000                           # create data (square matrix)
+mydata <- matrix(rnorm(size*size), size, size)
+
+m1 <- makeVector()                      # create caching data structure 
+m1$set(mydata)                          # place data into structure
+#m1$get()                                # show contents
+m1$getmean()                            # get the mean (none at this point)
+cachemean(m1)                           # calculate the mean
+cachemean(m1)                           # caculate the mean again (retrieved cached value)
