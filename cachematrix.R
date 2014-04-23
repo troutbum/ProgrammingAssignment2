@@ -12,7 +12,7 @@ makeCacheMatrix <- function(x = matrix()) {
         
         set <- function(y) {                                    # method to store data matrix
                 x <<- y
-                inverse <<- NULL
+                invCached <<- matrix(NA, 1, 1, FALSE, NULL)     # reset cached inverse to "empty"
         }
         get <- function() x                                     # method to retrieve data matrix
         setInverse <- function(inverse) invCached <<- inverse   # method to store mean
@@ -29,9 +29,10 @@ cacheSolve <- function(x, ...) {
         ## Return a matrix that is the inverse of 'x'
         
         inverse <- x$getInverse()               # retrieve cached inverse
-        if(!is.na(inverse)) {                   # if not empty, return cached inverse
-                message("getting cached inverse matrix")
-                return(inverse)
+        if(!is.na(inverse[1,1])) {              # if not empty, return cached inverse       
+                message("getting cached 
+                        inverse matrix")
+                return(inverse)                 # use invisible(inverse) to suppress print()
         }
         data <- x$get()                         # otherwise get cached data
         inverse <- solve(data, ...)             # calculate the inverse
@@ -42,12 +43,17 @@ cacheSolve <- function(x, ...) {
 
 # use functions to generate inverse matrix
 
-size <- 10                                      # create data (square matrix)
+size <- 10                                   # create data (square matrix)
 mydata <- matrix(rnorm(size*size), size, size)
 
 M1 <- makeCacheMatrix()                         # create caching data structure 
+M1
+environment(M1)
+
 M1$set(mydata)                                  # place data into structure
 M1$getInverse()                                 # get inverse (empty at this point)
-cacheSolve(M1)                                  # calculate the inverse
-cacheSolve(M1)                                  # caculate the inverse again (retrieved cached value)
+imat <- cacheSolve(M1)                          # calculate the inverse
+imat_cached <- cacheSolve(M1)                   # caculate the inverse again (retrieved cached value)
 
+identical(imat, imat_cached)                    # verify inverse and cached inversed are the same
+test <- mydata %*% imat                         # verify matrix %*% inverse = identity matrix
