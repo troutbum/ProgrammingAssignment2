@@ -3,14 +3,14 @@
 ## 
 
 # In this example we introduce the <<- operator which can be used to assign a
-# value to an object in an environment that is different from the current
+# values to an object in an environment that is different from the current
 # environment. 
 
 # Below are two functions that are used to create a special object
-# that stores a matrix and cache's its inverse.
+# that stores a matrix and caches its inverse.
 # 
-# The first function, makeVector creates a special "vector", which is really a
-# list containing a function to:
+# The first function, makeCacheMatrix() creates a special "matrix", which is really a
+# list containing functions to:
 # - set the matrix
 # - get matrix
 # - set matrix inverse
@@ -35,8 +35,8 @@ makeCacheMatrix <- function(x = matrix()) {
 }
 
 
-# The second function calculates the inverse of the object. It checks to see if the inverse
-# has already been calculated. Ff not, it calculates the inverse and stores it
+# The second function cacheSolve() calculates the inverse of the matrix. It checks to see if the inverse
+# has already been calculated. If not, it calculates the inverse and stores it
 # in the object.  Returns a matrix that is the inverse of 'x'
 
 cacheSolve <- function(x, ...) {
@@ -55,7 +55,7 @@ cacheSolve <- function(x, ...) {
 }
 
 # Now use these functions to generate an inverse matrix and cache it. Verify that
-# the calculated and cached inverses are identical Verify that the matrix
+# the calculated and cached inverses are identical. Verify that the matrix
 # multiplied by its inverse is equal to the identity matrix
 
 size <- 10                                       # create test data (square matrix)
